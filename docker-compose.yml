@@ -1,0 +1,10 @@
+---
+version: "3.7"
+
+services:
+  yamllint:
+    build:
+      context: .
+      dockerfile: Dockerfile-yamllint
+  app:
+    build: .

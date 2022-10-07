@@ -1,0 +1,9 @@
+---
+extends: default
+ignore: |
+  /node_modules/
+rules:
+  new-line-at-end-of-file: enable
+  line-length:
+    max: 120
+    allow-non-breakable-words: true

@@ -1,0 +1,18 @@
+{
+  "presets": [
+    ["@babel/preset-react", { "runtime": "automatic" }],
+    "@babel/preset-typescript",
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "edge": "78",
+          "chrome": "78",
+          "firefox": "91",
+          "safari": "12.1"
+        }
+      }
+    ]
+  ],
+  "plugins": ["babel-plugin-typescript-to-proptypes"]
+}

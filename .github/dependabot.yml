@@ -1,0 +1,22 @@
+---
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    versioning-strategy: lockfile-only
+    schedule:
+      day: monday
+      interval: weekly
+      time: "01:00"
+      timezone: "America/Los_Angeles"
+    ignore:
+      - dependency-name: "@storybook/*"
+    open-pull-requests-limit: 10
+
+  - package-ecosystem: docker
+    directory: "/"
+    schedule:
+      interval: weekly
+      time: "01:00"
+      timezone: "America/Los_Angeles"
+    open-pull-requests-limit: 10

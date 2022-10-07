@@ -1,0 +1,66 @@
+---
+steps:
+  - block: "Hold Build Pipeline"
+    prompt: "Proceed with build pipeline?"
+    if: build.message =~ /no test/i && build.branch != "main"
+    blocked_state: failed
+
+  - name: ":docker: Build"
+    plugins:
+      docker-compose#v3.7.0:
+        build: app
+        image-repository: "$IMAGE_REPOSITORY"
+        cache-from:
+          - "app:$IMAGE_REPOSITORY:branch-main"
+
+  - wait
+
+  - name: ":jest: Jest"
+    command: "yarn test"
+    timeout_in_minutes: 5
+    notify:
+      - github_commit_status:
+          context: "Test"
+    plugins:
+      docker-compose#v3.7.0:
+        run: app
+        dependencies: false
+
+  - name: ":eslint: ESLint"
+    command: "yarn lint"
+    timeout_in_minutes: 5
+    notify:
+      - github_commit_status:
+          context: "Lint"
+    plugins:
+      docker-compose#v3.7.0:
+        run: app
+        dependencies: false
+
+  - name: ":yaml: yamllint"
+    timeout_in_minutes: 5
+    notify:
+      - github_commit_status:
+          context: "Yaml Lint"
+    plugins:
+      docker-compose#v3.7.0:
+        run: yamllint
+        dependencies: false
+
+  - wait
+
+  - input: "Publish?"
+    key: "npm-publish-block"
+    if: build.branch == "main"
+
+  - name: ":npm: Publish to NPM"
+    depends_on: "npm-publish-block"
+    if: build.branch == "main"
+    command:
+      - ".buildkite/steps/publish.sh"
+    plugins:
+      docker-compose#v3.7.0:
+        run: app
+        dependencies: false
+        env:
+          - NPM_TOKEN
