@@ -1,4 +1,7 @@
 ---
+agents:
+  queue: "fast-arm"
+
 steps:
   - block: "Hold Build Pipeline"
     prompt: "Proceed with build pipeline?"
